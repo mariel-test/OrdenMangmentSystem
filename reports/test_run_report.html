@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Test Run Report — Order Management System</title>
+  <style>
+    body{font-family: Arial, Helvetica, sans-serif; background:#f6f7fb;color:#111;padding:24px}
+    .card{background:#fff;border:1px solid #e2e6ef;border-radius:8px;padding:18px;margin-bottom:12px}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:10px;border-bottom:1px solid #eef2fb;text-align:left}
+    th{background:#f0f6ff;color:#0b2b6b}
+    .passed{color:green;font-weight:700}
+    .failed{color:red;font-weight:700}
+    pre{background:#0f1724;color:#dff6ff;padding:12px;border-radius:6px;overflow:auto}
+    .meta{font-size:13px;color:#374151;margin-bottom:8px}
+  </style>
+</head>
+<body>
+  <h1>Test Run Report</h1>
+  <div class="meta">Proyecto: Order Management System — Fecha: 2026-05-30</div>
+  <div class="card">
+    <strong>Resumen:</strong> 3 passed, 0 failed
+  </div>
+
+  <div class="card">
+    <table>
+      <thead>
+        <tr><th>Test</th><th>Node ID</th><th>Estado</th><th>Detalles</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>test_01_get_orders</td>
+          <td>tests/apis/test_api_orders.py::TestAPICustomer::test_01_get_orders</td>
+          <td class="passed">PASSED</td>
+          <td><pre>✓ GET /orders OK: 4 órdenes
+--- Fin del test de orden 1 ---
+</pre></td>
+        </tr>
+        <tr>
+          <td>test_02_post_order_persists_in_db</td>
+          <td>tests/apis/test_api_orders.py::TestAPICustomer::test_02_post_order_persists_in_db</td>
+          <td class="passed">PASSED</td>
+          <td><pre>✓ Orden creada con ID: 22
+✓ Orden persiste en BD (count: 4→5)
+</pre></td>
+        </tr>
+        <tr>
+          <td>test_03_get_orders_shows_inserted_data</td>
+          <td>tests/apis/test_api_orders.py::TestAPICustomer::test_03_get_orders_shows_inserted_data</td>
+          <td class="passed">PASSED</td>
+          <td><pre>✓ GET retorna 6 orden(es)
+</pre></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <strong>Notas:</strong>
+    <ul>
+      <li>Advertencias al ejecutar: marcas pytest desconocidas (`smoke`, `happy_path`, `order`). Ver `pytest.ini` para registrar marcas si se desea.</li>
+      <li>Reporte generado a partir de la salida de pytest en modo verbose.</li>
+    </ul>
+  </div>
+
+  <footer style="font-size:12px;color:#6b7280;margin-top:18px">Ubicación: /reports/test_run_report.html</footer>
+</body>
+</html>

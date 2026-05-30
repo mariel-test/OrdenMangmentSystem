@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QA Test Coverage Report — Order Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0c0e14;
+            --bg-secondary: #13161f;
+            --bg-card: #191d2b;
+            --bg-card-hover: #1e2333;
+            --border: #2a2f42;
+            --text-primary: #e8eaf0;
+            --text-secondary: #8b90a5;
+            --text-muted: #5c6178;
+            --accent-blue: #5b8def;
+            --accent-green: #4ecb71;
+            --accent-yellow: #f0c245;
+            --accent-red: #ef5b5b;
+            --accent-purple: #a78bfa;
+            --accent-cyan: #22d3ee;
+            --accent-orange: #fb923c;
+            --tag-p1-bg: #ef5b5b22;
+            --tag-p1-text: #ef5b5b;
+            --tag-p2-bg: #f0c24522;
+            --tag-p2-text: #f0c245;
+            --tag-p3-bg: #5b8def22;
+            --tag-p3-text: #5b8def;
+            --tag-p4-bg: #5c617822;
+            --tag-p4-text: #8b90a5;
+            --tag-sev-crit-bg: #ef5b5b22;
+            --tag-sev-crit: #ef5b5b;
+            --tag-sev-maj-bg: #fb923c22;
+            --tag-sev-maj: #fb923c;
+            --tag-sev-mod-bg: #f0c24522;
+            --tag-sev-mod: #f0c245;
+            --tag-sev-min-bg: #4ecb7122;
+            --tag-sev-min: #4ecb71;
+            --smoke: #22d3ee;
+            --staging: #a78bfa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .noise-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .page-wrapper {
+            max-width: 1320px;
+            margin: 0 auto;
+            padding: 40px 32px 80px;
+        }
+
+        /* ─── HEADER ─── */
+        .report-header {
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 32px;
+            margin-bottom: 40px;
+        }
+
+        .report-header .badge-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .badge-version { background: var(--accent-blue); color: #0c0e14; }
+        .badge-date { background: var(--bg-card); color: var(--text-secondary); border: 1px solid var(--border); }
+        .badge-author { background: var(--accent-purple); color: #0c0e14; }
+
+        .report-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+            background: linear-gradient(135deg, var(--text-primary), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .report-header .subtitle {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        /* ─── EXECUTIVE SUMMARY ─── */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 48px;
+        }
+
+        .summary-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: border-color 0.2s;
+        }
+
+        .summary-card:hover { border-color: var(--accent-blue); }
+
+        .summary-card .number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 36px;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .summary-card .label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .c-blue { color: var(--accent-blue); }
+        .c-green { color: var(--accent-green); }
+        .c-yellow { color: var(--accent-yellow); }
+        .c-red { color: var(--accent-red); }
+        .c-purple { color: var(--accent-purple); }
+        .c-cyan { color: var(--accent-cyan); }
+
+        /* ─── SECTION HEADINGS ─── */
+        .section {
+            margin-bottom: 48px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-header .icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .section-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        .section-header .count {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-muted);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 2px 10px;
+            border-radius: 20px;
+            margin-left: auto;
+        }
+
+        /* ─── SUBSECTION ─── */
+        .subsection {
+            margin-bottom: 32px;
+        }
+
+        .subsection-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 14px;
+            padding-left: 4px;
+        }
+
+        /* ─── TEST CASE TABLE ─── */
+        .tc-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 13px;
+            margin-bottom: 24px;
+        }
+
+        .tc-table thead th {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .tc-table thead th:first-child { border-radius: 8px 0 0 0; }
+        .tc-table thead th:last-child { border-radius: 0 8px 0 0; }
+
+        .tc-table tbody tr {
+            transition: background 0.15s;
+        }
+
+        .tc-table tbody tr:hover {
+            background: var(--bg-card-hover);
+        }
+
+        .tc-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #1a1e2d;
+            vertical-align: top;
+        }
+
+        .tc-table .tc-id {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .tc-table .tc-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .tc-table .tc-desc {
+            color: var(--text-secondary);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .tc-table .tc-expected {
+            color: var(--accent-green);
+            font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* ─── TAGS ─── */
+        .tag {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 4px;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+
+        .tag-p1 { background: var(--tag-p1-bg); color: var(--tag-p1-text); }
+        .tag-p2 { background: var(--tag-p2-bg); color: var(--tag-p2-text); }
+        .tag-p3 { background: var(--tag-p3-bg); color: var(--tag-p3-text); }
+        .tag-p4 { background: var(--tag-p4-bg); color: var(--tag-p4-text); }
+
+        .tag-crit { background: var(--tag-sev-crit-bg); color: var(--tag-sev-crit); }
+        .tag-maj { background: var(--tag-sev-maj-bg); color: var(--tag-sev-maj); }
+        .tag-mod { background: var(--tag-sev-mod-bg); color: var(--tag-sev-mod); }
+        .tag-min { background: var(--tag-sev-min-bg); color: var(--tag-sev-min); }
+
+        .tag-smoke { background: #22d3ee22; color: var(--smoke); }
+        .tag-staging { background: #a78bfa22; color: var(--staging); }
+
+        .env-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+
+        /* ─── STRATEGY SECTION ─── */
+        .strategy-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 16px;
+        }
+
+        @media (max-width: 900px) {
+            .strategy-grid { grid-template-columns: 1fr; }
+        }
+
+        .strategy-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .strategy-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+        }
+
+        .strategy-card.s100::before { background: var(--accent-green); }
+        .strategy-card.s50::before { background: var(--accent-yellow); }
+        .strategy-card.s30::before { background: var(--accent-red); }
+
+        .strategy-card .pct {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 48px;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .strategy-card .s-title {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+
+        .strategy-card .s-meta {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .strategy-card .s-meta span { color: var(--text-secondary); }
+
+        .strategy-card .s-body {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .strategy-card .s-body strong { color: var(--text-primary); }
+
+        .risk-label {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 16px;
+        }
+
+        .risk-low { background: var(--accent-green); color: #0c0e14; }
+        .risk-med { background: var(--accent-yellow); color: #0c0e14; }
+        .risk-high { background: var(--accent-red); color: #0c0e14; }
+
+        /* ─── BUGS / OBSERVATIONS ─── */
+        .obs-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .obs-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--accent-orange);
+            border-radius: 0 8px 8px 0;
+            padding: 14px 18px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .obs-item strong {
+            color: var(--text-primary);
+        }
+
+        .obs-item code {
+            font-family: 'JetBrains Mono', monospace;
+            background: #ffffff08;
+            padding: 1px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+            color: var(--accent-cyan);
+        }
+
+        /* ─── COVERAGE MATRIX ─── */
+        .matrix-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 12px;
+            margin-top: 12px;
+        }
+
+        .matrix-table th {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .matrix-table th:first-child { text-align: left; border-radius: 8px 0 0 0; }
+        .matrix-table th:last-child { border-radius: 0 8px 0 0; }
+
+        .matrix-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid #1a1e2d;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .matrix-table td:first-child {
+            text-align: left;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .dot-yes { color: var(--accent-green); }
+        .dot-no { color: var(--text-muted); }
+
+        /* ─── FOOTER ─── */
+        .report-footer {
+            margin-top: 64px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .report-footer a {
+            color: var(--accent-blue);
+            text-decoration: none;
+        }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 768px) {
+            .page-wrapper { padding: 20px 16px 60px; }
+            .report-header h1 { font-size: 24px; }
+            .summary-grid { grid-template-columns: repeat(2, 1fr); }
+            .tc-table { font-size: 11px; }
+            .tc-table td, .tc-table th { padding: 8px 10px; }
+        }
+
+        /* ─── PRINT ─── */
+        @media print {
+            body { background: white; color: #111; }
+            .noise-overlay { display: none; }
+            .tc-table thead th { background: #f0f0f0; color: #333; }
+            .strategy-card, .summary-card { border: 1px solid #ccc; }
+        }
+    </style>
+</head>
+<body>
+<div class="noise-overlay"></div>
+<div class="page-wrapper">
+
+    <!-- ━━━ HEADER ━━━ -->
+    <header class="report-header">
+        <div class="badge-row">
+            <span class="badge badge-version">v1.0.0</span>
+            <span class="badge badge-date">2026-05-25</span>
+            <span class="badge badge-author">QA Automation SR</span>
+        </div>
+        <h1>Test Coverage Report</h1>
+        <p class="subtitle">Order Management System — PostgreSQL + Flask API + Frontend HTML</p>
+    </header>
+
+    <!-- ━━━ EXECUTIVE SUMMARY ━━━ -->
+    <div class="summary-grid">
+        <div class="summary-card">
+            <div class="number c-blue">52</div>
+            <div class="label">Total Test Cases</div>
+        </div>
+        <div class="summary-card">
+            <div class="number c-purple">7</div>
+            <div class="label">Módulos Cubiertos</div>
+        </div>
+        <div class="summary-card">
+            <div class="number c-cyan">32</div>
+            <div class="label">Staging (100%)</div>
+        </div>
+        <div class="summary-card">
+            <div class="number c-green">20</div>
+            <div class="label">Smoke Prod</div>
+        </div>
+        <div class="summary-card">
+            <div class="number c-red">8</div>
+            <div class="label">Blocker / Críticos</div>
+        </div>
+        <div class="summary-card">
+            <div class="number c-yellow">6</div>
+            <div class="label">Observaciones</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-header">
+            <div class="icon" style="background:#ef5b5b22; color:var(--accent-red);">🐞</div>
+            <h2>Bugs Bloqueantes</h2>
+            <span class="count">1 item</span>
+        </div>
+        <div class="subsection">
+            <table class="tc-table">
+                <thead><tr>
+                    <th>ID</th><th>Defecto</th><th>Severidad</th><th>Tests asociados</th><th>Impacto</th>
+                </tr></thead>
+                <tbody>
+                <tr>
+                    <td class="tc-id">BUG-001</td>
+                    <td class="tc-name">Payload mismatch para POST /api/orders</td>
+                    <td><span class="tag tag-crit">Bloqueante</span></td>
+                    <td class="tc-desc"><code>tests/apis/test_api_orders.py::test_02_post_order_persists_in_db</code>, <code>tests/apis/test_api_orders.py::test_03_get_orders_shows_inserted_data</code></td>
+                    <td class="tc-expected">El factory de pruebas (`fixture/order_factory.py`) utiliza <code>UnitPrice</code>/<code>Status</code> en lugar de <code>unit_price</code>/<code>status</code>, lo que no coincide con el contrato del backend y puede invalidar la creación de órdenes.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!--  SECCIÓN 1 — API ORDERS CRUD                             -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <div class="section">
+        <div class="section-header">
+            <div class="icon" style="background:#5b8def22; color:var(--accent-blue);">⚡</div>
+            <h2>API — Orders CRUD</h2>
+            <span class="count">18 cases</span>
+        </div>
+
+        <!-- GET -->
+        <div class="subsection">
+            <div class="subsection-title">GET Endpoints</div>
+            <table class="tc-table">
+                <thead><tr>
+                    <th>ID</th><th>Nombre</th><th>Descripción</th><th>Resultado Esperado</th><th>Prior.</th><th>Sever.</th><th>Env</th>
+                </tr></thead>
+                <tbody>
+                <tr>
+                    <td class="tc-id">TC-001</td>
+                    <td class="tc-name">GET /orders — lista completa</td>
+                    <td class="tc-desc">Obtener todas las órdenes con datos de customer y product vía JOIN</td>
+                    <td class="tc-expected">200 — success:true, data:[...], count:N</td>
+                    <td><span class="tag tag-p1">P1</span></td>
+                    <td><span class="tag tag-crit">Crítica</span></td>
+                    <td class="env-tags"><span class="tag tag-staging">STG</span><span class="tag tag-smoke">SMOKE</span></td>
+                </tr>
+                <tr>
+                    <td class="tc-id">TC-002</td>
+                    <td class="tc-name">GET /orders — base vacía</td>
+                    <td class="tc-desc">Solicitar órdenes cuando no existen registros en la tabla</td>
+                    <td class="tc-expected">200 — success:true, data:[], count:0</td>
+                    <td><span class="tag tag-p2">P2</span></td>
+                    <td><span class="tag tag-mod">Moderada</span></td>
+                    <td class="env-tags"><span class="tag tag-staging">STG</span></td>
+                </tr>
+                <tr>
+                    <td class="tc-id">TC-003</td>
+                    <td class="tc-name">GET /orders/:id — orden existente</td>
+                    <td class="tc-desc">Obtener una orden específica por ID válido</td>
+                    <td class="tc-expected">200 — success:true, data:{order}</td>
+                    <td><span class="tag tag-p1">P1</span></td>
+                    <td><span class="tag tag-crit">Crítica</span></td>
+                    <td class="env-tags"><span class="tag tag-staging">STG</span><span class="tag tag-smoke">SMOKE</span></td>
+                </tr>
+                <tr>
+                    <td class="tc-id">TC-004</td>
+                    <td class="tc-name">GET /orders/:id — no encontrada</td>
+                    <td class="tc-desc">Solicitar una orden con ID inexistente (ej. 99999)</td>
+                    <td class="tc-expected">404 — success:false, error:"Order not found"</td>
+                    <td><span class="tag tag-p1">P1</span></td>
+                    <td><span class="tag tag-maj">Mayor</span></td>
+                    <td class="env-tags"><span class="tag tag-staging">STG</span><span class="tag tag-smoke">SMOKE</span></td>
+                </tr>
+                <tr>
+                    <td class="tc-id">TC-005</td>
+                    <td class="tc-name">GET /orders — formato datetime</td>
+                    <td class="tc-desc">Verificar que created_at y updated_at se serializan en ISO 8601</td>
+                    <td class="tc-expected">Campos datetime en formato isoformat()</td>
+                    <td><span class="tag tag-p3">P3</span></td>
+                    <td><span class="tag tag-min">Menor</span></td>
+                    <td class="env-tags"><span class="tag tag-staging">STG</span></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- POST -->
+        <div class="subsection">
+            <div class="subsection-title">POST — Crear Orden</div>
+            <table class="tc-table">
+                <thead><tr>
+                    <th>ID</th><th>Nombre</th><th>Descripción</th><th>Resultado Esperado</th><th>Prior.</th><th>Sever.</th><th>Env</th>
+                </tr></thead>
+                <tbody>
+                <tr>
+                    <td class="tc-id">TC-006</td>
+                    <td class="tc-name">POST /orders — happy path</td>
+                    <td class="tc-desc">Crear orden con todos los campos válidos (customer_id, product_id, quantity, unit_price, status, notes)</td>
+                    <td class="tc-expected">201 — success:true, data:{order_id:N}</td>
+                    <td><span class="tag tag-p1">P1</span></td>
+                    <td><span class="tag tag-crit">Crítica</span></td>
+                    <td class="env-tags"><span class="tag tag-staging">STG</span><span class="tag tag-smoke">SMOKE</span></td>
+                </tr>
+                <tr>
+                    <td class="tc-id">TC-007</td>
+                    <td class="tc-name">POST /orders — cálculo total_price</td>
+                    <td class="tc-desc">Verificar que total_price = quantity × unit_price en el registro creado</td>
+                    <td class="tc-expected">total_price == quantity * unit_price</td>
+                    <td><span class="tag tag-p1">P1</span></td>
+                    <td><span class="tag tag-crit">Crítica</span></td>
+                    <td class="env-tags"><span class="tag tag-staging">STG</span><span class="tag tag-smoke">SMOKE</span></td>
+                </tr>
+                <tr>
+                    <td class="tc-id">TC-008</td>
+                    <td class="tc-name">POST /orders — sin customer_id</td>
+                    <td class="tc-desc">Enviar payload sin customer_id o con valor &lt;1</td>
+                    <td class="tc-expected">400 — errors:["Invalid customer ID"]</td>
+                    <td><span class="tag tag-p1">P1</span></td>
+                    <td><span class="tag tag-maj">Mayor</span></td>
+                    <td class="env-tags"><span class="tag tag-staging">STG</span><span class="tag tag-smoke">SMOKE</span></td>
+                </tr>
+                <tr>
+                    <td class="tc-id">TC-009</td>
+                    <td class="tc-name">POST /orders — sin product_id</td>
+                    <td class="tc-desc">Enviar payload sin product_id o con valor &lt;1</td>
+                    <td class="tc-expected">400 — errors:["Invalid product ID"]</td>
+                    <td><span class="tag tag-p2">P2</span></td>
+                    <td><span class="tag tag-maj">Mayor</span></td>
+                    <td class="env-tags"><span class="tag tag-staging">STG</span></td>
+                </tr>
+                <tr>
+                    <td class="tc-id">TC-010</td>
+                    <td class="tc-name">POST /orders — quantity &lt; 1</td>
+                    <td class="tc-desc">Enviar quantity=0 o negativo</td>
+                    <td class="tc-expected">400 — errors:["Quantity must be at least 1"]</td>
+                    <td><span class="tag tag-p2">P2</span></td>
+                    <td><span class="tag tag-maj">Mayor</span></td>
+                    <td class="env-tags"><span class="tag tag-staging">STG</span></td>
+                </tr>
+                <tr>
+                    <td class="tc-id">TC-011</td>
+                    <td class="tc-name">POST /orders — unit_price &le; 0</td>
+                    <td class="tc-desc">Enviar unit_price=0 o negativo</td>
+                    <td class="tc-expected">400 — errors:["Unit price must be greater than 0"]</td>
+                    <td><span class="tag tag-p2">P2</span></td>
+                    <td><span class="tag tag-maj">Mayor</span></td>
+                    <td class="env-tags"><span class="tag tag-staging">STG</span></td>
+                </tr>
+                <tr>
+                    <td class="tc-id">TC-012</td>
+                    <td class="tc-name">POST /orders — status inválido</td>
+                    <td class="tc-desc">Enviar status="shipped" u otro valor fuera del enum permitido</td>
+                    <td class="tc-expected">400 — errors:["Invalid status"]</td>
+                    <td><span class="tag tag-p2">P2</span></td>
+                    <td><span class="tag tag-mod">Moderada</span></td>
+                    <td class="env-tags"><span class="tag tag-staging">STG</span></td>
+                </tr>
+                <tr>
+                    <td class="tc-id">TC-013</td>
+                    <td class="tc-name">POST /orders — múltiples errores</td>
+                    <td class="tc-desc">Enviar payload con todos los campos inválidos simultáneamente</td>
+                    <td class="tc-expected">400 — errors contiene múltiples mensajes</td>
+                    <td><span class="tag tag-p3">P3</span></td>
+                    <td><span class="tag tag-mod">Moderada</span></td>
+                    <td class="env-tags"><span class="tag tag-staging">STG</span></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- PUT -->
+        <div class="subsection">
+            <div class="subsection-title">PUT — Actualizar Orden</div>
+            <table class="tc-table">
+                <thead><tr>
+                    <th>ID</th><th>Nombre</th><th>Descripción</th><th>Resultado Esperado</th><th>Prior.</th><th>Sever.</th><th>Env</th>
+                </tr></thead>
+                <tbody>
+                <tr>
+                    <td class="tc-id">TC-014</td>
+                    <td class="tc-name">PUT /orders/:id — actualizar quantity</td>
+                    <td class="tc-desc">Modificar quantity de una orden existente y verificar recálculo de total_price</td>
+                    <td class="tc-expected">200 — updated:true, total_price recalculado</td>
+                    <td><span class="tag tag-p1">P1</span></td>
+                    <td><span class="tag tag-crit">Crítica</span></td>
+                    <td class="env-tags"><span class="tag tag-staging">STG</span><span class="tag tag-smoke">SMOKE</span></td>
+                </tr>
+                <tr>
+                    <td class="tc-id">TC-015</td>
+                    <td class="tc-name">PUT /orders/:id — cambio de status</td>
+                    <td class="tc-desc">Cambiar status y verificar que se registre en order_history</td>
+                    <td class="tc-expected">200 — registro en order_history con old/new status y changed_by="API"</td>
+                    <td><span class="tag tag-p1">P1</span></td>
+                    <td><span class="tag tag-crit">Crítica</span></td>
+                    <td class="env-tags"><span class="tag tag-staging">STG</span><span class="tag tag-smoke">SMOKE</span></td>
+                </tr>
+                <tr>
+                    <td class="tc-id">TC-016</td>
+                    <td class="tc-name">PUT /orders/:id — orden inexistente</td>
+                    <td class="tc-desc">Intentar actualizar una orden con ID inexistente</td>
+                    <td class="tc-expected">404 — error:"Order not found"</td>
+                    <td><span class="tag tag-p2">P2</span></td>
+                    <td><span class="tag tag-maj">Mayor</span></td>
+                    <td class="env-tags"><span class="tag tag-staging">STG</span></td>
+                </tr>
+                <tr>
+                    <td class="tc-id">TC-017</td>
+                    <td class="tc-name">PUT /orders/:id — quantity &lt; 1</td>
+                    <td class="tc-desc">Enviar quantity=0 en update</td>
+                    <td class="tc-expected">400 — error:"Quantity must be at least 1"</td>
+                    <td><span class="tag tag-p2">P2</span></td>
+                    <td><span class="tag tag-mod">Moderada</span></td>
+                    <td class="env-tags"><span class="tag tag-staging">STG</span></td>
+                </tr>
+                <tr>
+                    <td class="tc-id">TC-018</td>
+                    <td class="tc-name">PUT /orders/:id — updated_at timestamp</td>
+                    <td class="tc-desc">Verificar que updated_at se actualiza con CURRENT_TIMESTAMP al hacer PUT</td>
+                    <td class="tc-expected">updated_at &gt; created_at después del update</td>
+                    <td><span class="tag tag-p3">P3</span></td>
+                    <td><span class="tag tag-min">Menor</span></td>
+                    <td class="env-tags"><span class="tag tag-staging">STG</span></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- DELETE -->
+        <div class="subsection">
+            <div class="subsection-title">DELETE — Eliminar Orden</div>
+            <table class="tc-table">
+                <thead><tr>
+                    <th>ID</th><th>Nombre</th><th>Descripción</th><th>Resultado Esperado</th><th>Prior.</th><th>Sever.</th><th>Env</th>
+                </tr></thead>
+                <tbody>
+                <tr>
+                    <td class="tc-id">TC-019</td>
+                    <td class="tc-name">DELETE /orders/:id — eliminar existente</td>
+                    <td class="tc-desc">Eliminar una orden existente y verificar que no se retorna en GET posterior</td>
+                    <td class="tc-expected">200 — deleted:true</td>
+                    <td><span class="tag tag-p1">P1</span></td>
+                    <td><span class="tag tag-crit">Crítica</span></td>
+                    <td class="env-tags"><span class="tag tag-staging">STG</span><span class="tag tag-smoke">SMOKE</span></td>
+                </tr>
+                <tr>
+                    <td class="tc-id">TC-020</td>
+                    <td class="tc-name">DELETE /orders/:id — inexistente</td>
+                    <td class="tc-desc">Intentar eliminar una orden con ID que no existe</td>
+                    <td class="tc-expected">404 — error:"Order not found"</td>
+                    <td><span class="tag tag-p2">P2</span></td>
+                    <td><span class="tag tag-mod">Moderada</span></td>
+                    <td class="env-tags"><span class="tag tag-staging">STG</span></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!--  SECCIÓN 2 — API AUXILIAR (Customers, Products, Reports) -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <div class="section">
+        <div class="section-header">
+            <div class="icon" style="background:#a78bfa22; color:var(--accent-purple);">📦</div>
+            <h2>API — Customers, Products & Reports</h2>
+            <span class="count">8 cases</span>
+        </div>
+        <table class="tc-table">
+            <thead><tr>
+                <th>ID</th><th>Nombre</th><th>Descripción</th><th>Resultado Esperado</th><th>Prior.</th><th>Sever.</th><th>Env</th>
+            </tr></thead>
+            <tbody>
+            <tr>
+                <td class="tc-id">TC-021</td>
+                <td class="tc-name">GET /customers — listar clientes</td>
+                <td class="tc-desc">Obtener todos los clientes ordenados por nombre</td>
+                <td class="tc-expected">200 — success:true, data ordenada ASC por name</td>
+                <td><span class="tag tag-p1">P1</span></td>
+                <td><span class="tag tag-maj">Mayor</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span><span class="tag tag-smoke">SMOKE</span></td>
+            </tr>
+            <tr>
+                <td class="tc-id">TC-022</td>
+                <td class="tc-name">GET /products — listar productos</td>
+                <td class="tc-desc">Obtener todos los productos ordenados por product_name</td>
+                <td class="tc-expected">200 — success:true, data ordenada ASC por product_name</td>
+                <td><span class="tag tag-p1">P1</span></td>
+                <td><span class="tag tag-maj">Mayor</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span><span class="tag tag-smoke">SMOKE</span></td>
+            </tr>
+            <tr>
+                <td class="tc-id">TC-023</td>
+                <td class="tc-name">GET /reports/sales-by-customer</td>
+                <td class="tc-desc">Obtener total_orders, total_spent, avg_order_value por cliente</td>
+                <td class="tc-expected">200 — data agrupada con SUMs/AVGs correctos, orden DESC por total_spent</td>
+                <td><span class="tag tag-p2">P2</span></td>
+                <td><span class="tag tag-mod">Moderada</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span></td>
+            </tr>
+            <tr>
+                <td class="tc-id">TC-024</td>
+                <td class="tc-name">GET /reports/sales-by-customer — cliente sin órdenes</td>
+                <td class="tc-desc">Verificar que clientes sin órdenes aparecen con total_spent=null (LEFT JOIN)</td>
+                <td class="tc-expected">200 — cliente incluido con total_orders=0, total_spent=null</td>
+                <td><span class="tag tag-p3">P3</span></td>
+                <td><span class="tag tag-min">Menor</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span></td>
+            </tr>
+            <tr>
+                <td class="tc-id">TC-025</td>
+                <td class="tc-name">GET /reports/orders-by-status</td>
+                <td class="tc-desc">Obtener count, total_amount, avg_amount por status</td>
+                <td class="tc-expected">200 — agrupación correcta con sumas y promedios</td>
+                <td><span class="tag tag-p2">P2</span></td>
+                <td><span class="tag tag-mod">Moderada</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span></td>
+            </tr>
+            <tr>
+                <td class="tc-id">TC-026</td>
+                <td class="tc-name">GET /health — servicio healthy</td>
+                <td class="tc-desc">Verificar health check con base de datos activa</td>
+                <td class="tc-expected">200 — status:"healthy", database:"PostgreSQL"</td>
+                <td><span class="tag tag-p1">P1</span></td>
+                <td><span class="tag tag-crit">Crítica</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span><span class="tag tag-smoke">SMOKE</span></td>
+            </tr>
+            <tr>
+                <td class="tc-id">TC-027</td>
+                <td class="tc-name">GET /health — DB caída</td>
+                <td class="tc-desc">Verificar health check cuando la base de datos no responde</td>
+                <td class="tc-expected">500 — status:"unhealthy", error con detalle</td>
+                <td><span class="tag tag-p2">P2</span></td>
+                <td><span class="tag tag-maj">Mayor</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span></td>
+            </tr>
+            <tr>
+                <td class="tc-id">TC-028</td>
+                <td class="tc-name">GET /ruta-inexistente — 404 handler</td>
+                <td class="tc-desc">Solicitar un endpoint que no existe</td>
+                <td class="tc-expected">404 — error:"Endpoint not found"</td>
+                <td><span class="tag tag-p3">P3</span></td>
+                <td><span class="tag tag-min">Menor</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!--  SECCIÓN 3 — FRONTEND UI                                 -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <div class="section">
+        <div class="section-header">
+            <div class="icon" style="background:#22d3ee22; color:var(--accent-cyan);">🖥️</div>
+            <h2>Frontend — UI & Interacciones</h2>
+            <span class="count">14 cases</span>
+        </div>
+        <table class="tc-table">
+            <thead><tr>
+                <th>ID</th><th>Nombre</th><th>Descripción</th><th>Resultado Esperado</th><th>Prior.</th><th>Sever.</th><th>Env</th>
+            </tr></thead>
+            <tbody>
+            <tr>
+                <td class="tc-id">TC-029</td>
+                <td class="tc-name">Carga inicial de órdenes</td>
+                <td class="tc-desc">Al abrir la página, se ejecuta loadOrders() y la tabla se renderiza con datos del API</td>
+                <td class="tc-expected">Tabla visible con columnas: ID, Customer, Product, Qty, Price, Total, Status, Date, Actions</td>
+                <td><span class="tag tag-p1">P1</span></td>
+                <td><span class="tag tag-crit">Crítica</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span><span class="tag tag-smoke">SMOKE</span></td>
+            </tr>
+            <tr>
+                <td class="tc-id">TC-030</td>
+                <td class="tc-name">Loading state visible</td>
+                <td class="tc-desc">Mientras carga datos, aparece el mensaje "Loading orders..."</td>
+                <td class="tc-expected">Div con clase .loading visible durante la petición</td>
+                <td><span class="tag tag-p3">P3</span></td>
+                <td><span class="tag tag-min">Menor</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span></td>
+            </tr>
+            <tr>
+                <td class="tc-id">TC-031</td>
+                <td class="tc-name">Crear orden — formulario completo</td>
+                <td class="tc-desc">Completar todos los campos y hacer clic en "Create Order"</td>
+                <td class="tc-expected">Mensaje success, formulario se limpia, tabla se refresca con nueva orden</td>
+                <td><span class="tag tag-p1">P1</span></td>
+                <td><span class="tag tag-crit">Crítica</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span><span class="tag tag-smoke">SMOKE</span></td>
+            </tr>
+            <tr>
+                <td class="tc-id">TC-032</td>
+                <td class="tc-name">Crear orden — validación client-side</td>
+                <td class="tc-desc">Enviar formulario con campos vacíos</td>
+                <td class="tc-expected">Mensaje error: "Please fill all required fields"</td>
+                <td><span class="tag tag-p1">P1</span></td>
+                <td><span class="tag tag-maj">Mayor</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span><span class="tag tag-smoke">SMOKE</span></td>
+            </tr>
+            <tr>
+                <td class="tc-id">TC-033</td>
+                <td class="tc-name">Botón Reset — limpia formulario</td>
+                <td class="tc-desc">Completar campos y hacer clic en "Clear Form"</td>
+                <td class="tc-expected">Todos los campos del formulario quedan vacíos</td>
+                <td><span class="tag tag-p3">P3</span></td>
+                <td><span class="tag tag-min">Menor</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span></td>
+            </tr>
+            <tr>
+                <td class="tc-id">TC-034</td>
+                <td class="tc-name">Botón Refresh — recarga órdenes</td>
+                <td class="tc-desc">Hacer clic en "Refresh Orders" para recargar datos del API</td>
+                <td class="tc-expected">Tabla se actualiza con datos frescos del backend</td>
+                <td><span class="tag tag-p2">P2</span></td>
+                <td><span class="tag tag-mod">Moderada</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span></td>
+            </tr>
+            <tr>
+                <td class="tc-id">TC-035</td>
+                <td class="tc-name">Edit — modal se abre</td>
+                <td class="tc-desc">Clic en botón Edit de una fila en la tabla</td>
+                <td class="tc-expected">Modal visible con campos Quantity y Status, currentEditingOrderId seteado</td>
+                <td><span class="tag tag-p1">P1</span></td>
+                <td><span class="tag tag-maj">Mayor</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span><span class="tag tag-smoke">SMOKE</span></td>
+            </tr>
+            <tr>
+                <td class="tc-id">TC-036</td>
+                <td class="tc-name">Edit — guardar cambios</td>
+                <td class="tc-desc">Modificar quantity y/o status en el modal y hacer clic en "Save Changes"</td>
+                <td class="tc-expected">Modal se cierra, mensaje success, tabla refleja cambios</td>
+                <td><span class="tag tag-p1">P1</span></td>
+                <td><span class="tag tag-maj">Mayor</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span><span class="tag tag-smoke">SMOKE</span></td>
+            </tr>
+            <tr>
+                <td class="tc-id">TC-037</td>
+                <td class="tc-name">Edit — cancelar</td>
+                <td class="tc-desc">Abrir modal de edición y hacer clic en "Cancel"</td>
+                <td class="tc-expected">Modal se cierra, ningún cambio persiste</td>
+                <td><span class="tag tag-p3">P3</span></td>
+                <td><span class="tag tag-min">Menor</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span></td>
+            </tr>
+            <tr>
+                <td class="tc-id">TC-038</td>
+                <td class="tc-name">Edit — validación quantity &lt; 1</td>
+                <td class="tc-desc">En el modal, ingresar quantity=0 y guardar</td>
+                <td class="tc-expected">Mensaje error: "Quantity must be at least 1"</td>
+                <td><span class="tag tag-p2">P2</span></td>
+                <td><span class="tag tag-mod">Moderada</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span></td>
+            </tr>
+            <tr>
+                <td class="tc-id">TC-039</td>
+                <td class="tc-name">Delete — confirmación aceptada</td>
+                <td class="tc-desc">Clic en Delete, aceptar el confirm() del browser</td>
+                <td class="tc-expected">Orden eliminada, mensaje success, tabla se refresca sin esa fila</td>
+                <td><span class="tag tag-p1">P1</span></td>
+                <td><span class="tag tag-crit">Crítica</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span><span class="tag tag-smoke">SMOKE</span></td>
+            </tr>
+            <tr>
+                <td class="tc-id">TC-040</td>
+                <td class="tc-name">Delete — confirmación cancelada</td>
+                <td class="tc-desc">Clic en Delete, cancelar el confirm() del browser</td>
+                <td class="tc-expected">Orden sigue existiendo, no se envía DELETE al API</td>
+                <td><span class="tag tag-p2">P2</span></td>
+                <td><span class="tag tag-mod">Moderada</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span></td>
+            </tr>
+            <tr>
+                <td class="tc-id">TC-041</td>
+                <td class="tc-name">Status badge — estilo visual</td>
+                <td class="tc-desc">Verificar que cada status (pending, processing, completed) tiene badge con color correcto</td>
+                <td class="tc-expected">pending=amarillo, processing=cyan, completed=verde</td>
+                <td><span class="tag tag-p4">P4</span></td>
+                <td><span class="tag tag-min">Menor</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span></td>
+            </tr>
+            <tr>
+                <td class="tc-id">TC-042</td>
+                <td class="tc-name">Mensaje auto-hide (5s)</td>
+                <td class="tc-desc">Verificar que los mensajes de status desaparecen después de 5 segundos</td>
+                <td class="tc-expected">className vuelve a "status-message" (sin success/error) tras setTimeout 5000</td>
+                <td><span class="tag tag-p4">P4</span></td>
+                <td><span class="tag tag-min">Menor</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!--  SECCIÓN 4 — INTEGRACIÓN E2E                             -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <div class="section">
+        <div class="section-header">
+            <div class="icon" style="background:#4ecb7122; color:var(--accent-green);">🔗</div>
+            <h2>Integración E2E — Flujos Completos</h2>
+            <span class="count">5 cases</span>
+        </div>
+        <table class="tc-table">
+            <thead><tr>
+                <th>ID</th><th>Nombre</th><th>Descripción</th><th>Resultado Esperado</th><th>Prior.</th><th>Sever.</th><th>Env</th>
+            </tr></thead>
+            <tbody>
+            <tr>
+                <td class="tc-id">TC-043</td>
+                <td class="tc-name">E2E — Crear → Verificar en lista</td>
+                <td class="tc-desc">Crear orden vía UI, verificar que aparece en la tabla y que GET /orders la retorna</td>
+                <td class="tc-expected">Orden visible en tabla con datos correctos</td>
+                <td><span class="tag tag-p1">P1</span></td>
+                <td><span class="tag tag-crit">Crítica</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span><span class="tag tag-smoke">SMOKE</span></td>
+            </tr>
+            <tr>
+                <td class="tc-id">TC-044</td>
+                <td class="tc-name">E2E — Crear → Editar → Verificar</td>
+                <td class="tc-desc">Crear orden, editarla vía modal, verificar que los cambios persisten</td>
+                <td class="tc-expected">Quantity y status actualizados en tabla y en GET /orders/:id</td>
+                <td><span class="tag tag-p1">P1</span></td>
+                <td><span class="tag tag-maj">Mayor</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span><span class="tag tag-smoke">SMOKE</span></td>
+            </tr>
+            <tr>
+                <td class="tc-id">TC-045</td>
+                <td class="tc-name">E2E — Crear → Eliminar → Verificar</td>
+                <td class="tc-desc">Crear orden, eliminarla, verificar que desaparece de tabla y de GET /orders</td>
+                <td class="tc-expected">Orden ya no existe en tabla ni en API</td>
+                <td><span class="tag tag-p1">P1</span></td>
+                <td><span class="tag tag-maj">Mayor</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span></td>
+            </tr>
+            <tr>
+                <td class="tc-id">TC-046</td>
+                <td class="tc-name">E2E — Ciclo de vida status</td>
+                <td class="tc-desc">Crear orden pending → editar a processing → editar a completed. Verificar order_history</td>
+                <td class="tc-expected">order_history tiene 2 registros de cambios de status</td>
+                <td><span class="tag tag-p2">P2</span></td>
+                <td><span class="tag tag-maj">Mayor</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span></td>
+            </tr>
+            <tr>
+                <td class="tc-id">TC-047</td>
+                <td class="tc-name">E2E — API down → UI error</td>
+                <td class="tc-desc">Simular API no disponible y verificar comportamiento del frontend</td>
+                <td class="tc-expected">Mensaje "Error: Failed to fetch" o similar en UI, sin crash</td>
+                <td><span class="tag tag-p2">P2</span></td>
+                <td><span class="tag tag-maj">Mayor</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!--  SECCIÓN 5 — SEGURIDAD & EDGE CASES                     -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <div class="section">
+        <div class="section-header">
+            <div class="icon" style="background:#ef5b5b22; color:var(--accent-red);">🛡️</div>
+            <h2>Seguridad & Edge Cases</h2>
+            <span class="count">7 cases</span>
+        </div>
+        <table class="tc-table">
+            <thead><tr>
+                <th>ID</th><th>Nombre</th><th>Descripción</th><th>Resultado Esperado</th><th>Prior.</th><th>Sever.</th><th>Env</th>
+            </tr></thead>
+            <tbody>
+            <tr>
+                <td class="tc-id">TC-048</td>
+                <td class="tc-name">SQL Injection — customer_id</td>
+                <td class="tc-desc">Enviar payload con customer_id conteniendo SQL malicioso vía POST /orders</td>
+                <td class="tc-expected">400 o 500 — sin ejecución de SQL inyectado (psycopg2 usa %s parameterized)</td>
+                <td><span class="tag tag-p1">P1</span></td>
+                <td><span class="tag tag-crit">Crítica</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span><span class="tag tag-smoke">SMOKE</span></td>
+            </tr>
+            <tr>
+                <td class="tc-id">TC-049</td>
+                <td class="tc-name">XSS — campo notes</td>
+                <td class="tc-desc">Inyectar &lt;script&gt;alert('xss')&lt;/script&gt; en el campo notes y verificar que la tabla renderiza texto escapado</td>
+                <td class="tc-expected">Script no ejecutado, texto renderizado como literal en la celda</td>
+                <td><span class="tag tag-p1">P1</span></td>
+                <td><span class="tag tag-crit">Crítica</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span><span class="tag tag-smoke">SMOKE</span></td>
+            </tr>
+            <tr>
+                <td class="tc-id">TC-050</td>
+                <td class="tc-name">Boundary — quantity MAX_INT</td>
+                <td class="tc-desc">Enviar quantity=2147483647 (max int32) y verificar comportamiento</td>
+                <td class="tc-expected">Orden creada o error controlado, sin overflow silencioso</td>
+                <td><span class="tag tag-p3">P3</span></td>
+                <td><span class="tag tag-mod">Moderada</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span></td>
+            </tr>
+            <tr>
+                <td class="tc-id">TC-051</td>
+                <td class="tc-name">Boundary — unit_price con muchos decimales</td>
+                <td class="tc-desc">Enviar unit_price=99.999999 y verificar precisión en total_price</td>
+                <td class="tc-expected">Precio almacenado con precisión adecuada al tipo NUMERIC/DECIMAL de la columna</td>
+                <td><span class="tag tag-p3">P3</span></td>
+                <td><span class="tag tag-mod">Moderada</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span></td>
+            </tr>
+            <tr>
+                <td class="tc-id">TC-052</td>
+                <td class="tc-name">Caracteres especiales en notes</td>
+                <td class="tc-desc">Enviar notes con emojis, UTF-8 extendido, comillas, backslashes</td>
+                <td class="tc-expected">Datos almacenados y retornados sin corrupción</td>
+                <td><span class="tag tag-p3">P3</span></td>
+                <td><span class="tag tag-min">Menor</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span></td>
+            </tr>
+            <tr>
+                <td class="tc-id">TC-053</td>
+                <td class="tc-name">CORS — petición cross-origin</td>
+                <td class="tc-desc">Verificar que CORS está habilitado correctamente para peticiones desde otro dominio</td>
+                <td class="tc-expected">Headers Access-Control-Allow-Origin presentes en respuesta</td>
+                <td><span class="tag tag-p2">P2</span></td>
+                <td><span class="tag tag-maj">Mayor</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span></td>
+            </tr>
+            <tr>
+                <td class="tc-id">TC-054</td>
+                <td class="tc-name">DB connection leak</td>
+                <td class="tc-desc">Ejecutar 50+ requests rápidos en secuencia y verificar que conexiones se cierran correctamente</td>
+                <td class="tc-expected">No hay exhaustion de conexiones, todas las requests responden</td>
+                <td><span class="tag tag-p2">P2</span></td>
+                <td><span class="tag tag-maj">Mayor</span></td>
+                <td class="env-tags"><span class="tag tag-staging">STG</span></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!--  COVERAGE MATRIX                                          -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <div class="section">
+        <div class="section-header">
+            <div class="icon" style="background:#f0c24522; color:var(--accent-yellow);">📊</div>
+            <h2>Matriz de Cobertura por Ambiente</h2>
+        </div>
+        <table class="matrix-table">
+            <thead><tr>
+                <th>Módulo</th>
+                <th>Total TCs</th>
+                <th>Staging 100%</th>
+                <th>Staging 50%</th>
+                <th>Staging 30%</th>
+                <th>Smoke Prod</th>
+            </tr></thead>
+            <tbody>
+            <tr>
+                <td>API — Orders CRUD</td>
+                <td>20</td>
+                <td class="dot-yes">20</td>
+                <td class="dot-yes">10</td>
+                <td class="dot-yes">6</td>
+                <td class="dot-yes">10</td>
+            </tr>
+            <tr>
+                <td>API — Customers/Products/Reports</td>
+                <td>8</td>
+                <td class="dot-yes">8</td>
+                <td class="dot-yes">4</td>
+                <td class="dot-yes">2</td>
+                <td class="dot-yes">3</td>
+            </tr>
+            <tr>
+                <td>Frontend — UI</td>
+                <td>14</td>
+                <td class="dot-yes">14</td>
+                <td class="dot-yes">7</td>
+                <td class="dot-yes">4</td>
+                <td class="dot-yes">6</td>
+            </tr>
+            <tr>
+                <td>Integración E2E</td>
+                <td>5</td>
+                <td class="dot-yes">5</td>
+                <td class="dot-yes">3</td>
+                <td class="dot-yes">2</td>
+                <td class="dot-yes">3</td>
+            </tr>
+            <tr>
+                <td>Seguridad & Edge Cases</td>
+                <td>7</td>
+                <td class="dot-yes">7</td>
+                <td class="dot-yes">3</td>
+                <td class="dot-yes">2</td>
+                <td class="dot-yes">2</td>
+            </tr>
+            <tr style="font-weight:700; border-top:2px solid var(--border);">
+                <td style="color:var(--accent-blue);">TOTAL</td>
+                <td style="color:var(--accent-blue);">54</td>
+                <td class="dot-yes" style="color:var(--accent-green);">54</td>
+                <td class="dot-yes" style="color:var(--accent-yellow);">27</td>
+                <td class="dot-yes" style="color:var(--accent-red);">16</td>
+                <td class="dot-yes" style="color:var(--accent-cyan);">24</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!--  ESTRATEGIA DE ENTREGA                                    -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <div class="section">
+        <div class="section-header">
+            <div class="icon" style="background:#fb923c22; color:var(--accent-orange);">🚀</div>
+            <h2>Estrategia de Entrega según Tiempo de Delivery</h2>
+        </div>
+
+        <div class="strategy-grid">
+            <!-- 100% -->
+            <div class="strategy-card s100">
+                <div class="pct c-green">100%</div>
+                <div class="s-title">Cobertura Completa</div>
+                <div class="s-meta">
+                    <span>📋 54 test cases ejecutados</span>
+                    <span>⏱️ Estimación: 3–4 días (manual) / 2 días (automatizado)</span>
+                    <span>🔧 Staging: 54 TCs + Smoke Prod: 24 TCs</span>
+                </div>
+                <div class="s-body">
+                    <strong>Cuándo usar:</strong> Releases mayores, cambios de schema de DB, migración de ambiente, primer deploy a producción, o después de refactoring significativo del backend.<br><br>
+                    <strong>Incluye:</strong> Todos los happy paths, validaciones negativas, edge cases, seguridad (SQLi/XSS), boundary testing, reportes, flujos E2E completos, y verificación de integridad de datos (total_price, order_history, timestamps).<br><br>
+                    <strong>Trade-off:</strong> Máxima confianza, mayor tiempo de ejecución. Justificado cuando el costo de un defecto en prod es alto.
+                </div>
+                <div class="risk-label risk-low">Riesgo: Bajo</div>
+            </div>
+
+            <!-- 50% -->
+            <div class="strategy-card s50">
+                <div class="pct c-yellow">50%</div>
+                <div class="s-title">Cobertura Balanceada</div>
+                <div class="s-meta">
+                    <span>📋 27 test cases ejecutados</span>
+                    <span>⏱️ Estimación: 1.5–2 días (manual) / 1 día (automatizado)</span>
+                    <span>🔧 Staging: 27 TCs + Smoke Prod: 24 TCs</span>
+                </div>
+                <div class="s-body">
+                    <strong>Cuándo usar:</strong> Sprints regulares con features incrementales, hotfixes de mediana complejidad, o cuando el timeline aprieta pero los cambios tocan lógica de negocio.<br><br>
+                    <strong>Incluye:</strong> Todos los P1, P2 selectivos en módulos afectados, un flujo E2E completo (crear→editar→eliminar), validaciones negativas críticas, y los 2 checks de seguridad principales (SQLi + XSS).<br><br>
+                    <strong>Excluye:</strong> Boundary testing, edge cases de precision numérica, validaciones P3/P4, reportes de bajo impacto, y tests visuales (badges, auto-hide).
+                </div>
+                <div class="risk-label risk-med">Riesgo: Medio</div>
+            </div>
+
+            <!-- 30% -->
+            <div class="strategy-card s30">
+                <div class="pct c-red">30%</div>
+                <div class="s-title">Cobertura Mínima Viable</div>
+                <div class="s-meta">
+                    <span>📋 16 test cases ejecutados</span>
+                    <span>⏱️ Estimación: 4–6 horas (manual) / 2–3 horas (automatizado)</span>
+                    <span>🔧 Staging: 16 TCs + Smoke Prod: 24 TCs</span>
+                </div>
+                <div class="s-body">
+                    <strong>Cuándo usar:</strong> Hotfixes urgentes, cambios cosméticos, correcciones de texto/UI, deploys de bajo riesgo con rollback disponible, o cuando hay pipeline automatizado confiable que cubre el resto.<br><br>
+                    <strong>Incluye:</strong> SOLO P1 críticos: CRUD happy path (crear, leer, editar, eliminar), health check, un E2E de flujo completo, carga inicial UI, y SQLi básico.<br><br>
+                    <strong>Excluye:</strong> Todas las validaciones negativas excepto una por operación, reportes, seguridad avanzada, E2E de lifecycle, boundary, y cualquier test P3/P4.<br><br>
+                    <strong>⚠️ Requiere:</strong> Monitoreo activo post-deploy y rollback plan documentado.
+                </div>
+                <div class="risk-label risk-high">Riesgo: Alto</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!--  OBSERVACIONES / HALLAZGOS                                -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <div class="section">
+        <div class="section-header">
+            <div class="icon" style="background:#fb923c22; color:var(--accent-orange);">⚠️</div>
+            <h2>Observaciones del Código — Hallazgos Preventivos</h2>
+            <span class="count">6 items</span>
+        </div>
+        <div class="obs-list">
+            <div class="obs-item">
+                <strong>OBS-001 | XSS Potencial en Frontend:</strong> La tabla de órdenes usa template literals con <code>innerHTML</code> y concatenación directa de datos del API (<code>${order.notes}</code>, <code>${order.status}</code>). Si la API retorna datos con HTML/JS malicioso (ej. en <code>notes</code>), el frontend lo renderiza sin sanitizar. El backend almacena lo que recibe sin filtrar. <strong>Severidad: Crítica.</strong>
+            </div>
+            <div class="obs-item">
+                <strong>OBS-002 | Conexiones DB sin Connection Pool:</strong> Cada request abre y cierra una conexión nueva con <code>psycopg2.connect()</code>. Bajo carga concurrente, esto puede agotar conexiones del servidor PostgreSQL. Recomendación: implementar <code>psycopg2.pool.ThreadedConnectionPool</code> o migrar a SQLAlchemy con pooling.
+            </div>
+            <div class="obs-item">
+                <strong>OBS-003 | Status "cancelled" solo en backend:</strong> El API valida <code>cancelled</code> como status válido en POST, pero el frontend (select en formulario y modal) solo ofrece <code>pending</code>, <code>processing</code>, <code>completed</code>. No hay forma de crear o editar a "cancelled" desde la UI. Inconsistencia funcional.
+            </div>
+            <div class="obs-item">
+                <strong>OBS-004 | Mismatch de payload para POST /api/orders:</strong> La prueba de creación de órdenes `tests/apis/test_api_orders.py::test_02_post_order_persists_in_db` y el flujo de prueba `test_03_get_orders_shows_inserted_data` usan un factory de datos (`fixture/order_factory.py`) que construye campos <code>UnitPrice</code> y <code>Status</code> en lugar de <code>unit_price</code> y <code>status</code>. Esto no coincide con el contrato del backend y puede causar fallos de validación en el POST.
+            </div>
+            <div class="obs-item">
+                <strong>OBS-005 | Edit modal no precarga datos actuales:</strong> Al hacer clic en "Edit", el modal abre con <code>quantity=""</code> y <code>status="pending"</code> por defecto, sin cargar los valores actuales de la orden. El usuario pierde contexto de qué está editando y puede sobrescribir con valores incorrectos sin darse cuenta.
+            </div>
+            <div class="obs-item">
+                <strong>OBS-006 | Password hardcodeado en código fuente:</strong> El <code>DB_PASSWORD</code> tiene un fallback hardcodeado <code>'M1l02025'</code> en el código. Si se pushea a un repo público, expone credenciales. Recomendación: usar solo <code>os.getenv()</code> sin fallback, o usar un secrets manager.
+            </div>
+        </div>
+    </div>
+
+    <!-- ━━━ FOOTER ━━━ -->
+    <footer class="report-footer">
+        <span>QA Test Coverage Report — Order Management System v1.0.0</span>
+        <span>Generado: 2026-05-25 | Autor: QA Automation SR</span>
+    </footer>
+
+</div>
+</body>
+</html>
