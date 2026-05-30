@@ -592,24 +592,6 @@
                     <td class="env-tags"><span class="tag tag-staging">STG</span></td>
                 </tr>
                 <tr>
-                    <td class="tc-id">TC-003</td>
-                    <td class="tc-name">GET /orders/:id — orden existente</td>
-                    <td class="tc-desc">Obtener una orden específica por ID válido</td>
-                    <td class="tc-expected">200 — success:true, data:{order}</td>
-                    <td><span class="tag tag-p1">P1</span></td>
-                    <td><span class="tag tag-crit">Crítica</span></td>
-                    <td class="env-tags"><span class="tag tag-staging">STG</span><span class="tag tag-smoke">SMOKE</span></td>
-                </tr>
-                <tr>
-                    <td class="tc-id">TC-004</td>
-                    <td class="tc-name">GET /orders/:id — no encontrada</td>
-                    <td class="tc-desc">Solicitar una orden con ID inexistente (ej. 99999)</td>
-                    <td class="tc-expected">404 — success:false, error:"Order not found"</td>
-                    <td><span class="tag tag-p1">P1</span></td>
-                    <td><span class="tag tag-maj">Mayor</span></td>
-                    <td class="env-tags"><span class="tag tag-staging">STG</span><span class="tag tag-smoke">SMOKE</span></td>
-                </tr>
-                <tr>
                     <td class="tc-id">TC-005</td>
                     <td class="tc-name">GET /orders — formato datetime</td>
                     <td class="tc-desc">Verificar que created_at y updated_at se serializan en ISO 8601</td>
